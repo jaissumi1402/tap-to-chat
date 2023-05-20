@@ -10,7 +10,7 @@ const path = require("path");
 dotenv.config();
 connectDB();
 const app = express();
-
+const User = require("../backend/models/userModel");
 app.use(express.json()); // to accept json data
 
 // app.get("/", (req, res) => {
@@ -19,6 +19,28 @@ app.use(express.json()); // to accept json data
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
+
+app.post("/api/updatePic", (req,res) => {
+  const {pic,user} = req.body
+  console.log(pic,user.email)
+  const update = async() => {
+    const result = await User.updateOne(
+            {
+                email:user.email,
+            },
+            {
+                $set: {
+                    pic:pic,
+                }
+            }
+        )
+        console.log(result)
+        res.status(200).send("updated Image")
+  }
+  update()
+
+})
+
 app.use("/api/message", messageRoutes);
 
 // --------------------------deployment------------------------------
@@ -80,7 +102,7 @@ io.on("connection", (socket) => {
     chat.users.forEach((user) => {
       if (user._id == newMessageRecieved.sender._id) return;
 
-      socket.in(user._id).emit("message recieved", newMessageRecieved);
+      io.to(user._id).emit("message recieved", newMessageRecieved);
     });
   });
 

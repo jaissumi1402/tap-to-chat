@@ -2,6 +2,7 @@ import { Button } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { Input } from "@chakra-ui/input";
 import { Box, Text } from "@chakra-ui/layout";
+import EditModal from "./EditProfile"
 import {
   Menu,
   MenuButton,
@@ -185,6 +186,10 @@ function SideDrawer() {
               </ProfileModal>
               <MenuDivider />
               <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+               <MenuDivider/>
+              <EditModal user={user}>
+                <MenuItem>Edit Profile</MenuItem>
+              </EditModal>
             </MenuList>
           </Menu>
         </div>
@@ -207,13 +212,14 @@ function SideDrawer() {
             {loading ? (
               <ChatLoading />
             ) : (
-              searchResult?.map((user) => (
-                <UserListItem
-                  key={user._id}
-                  user={user}
-                  handleFunction={() => accessChat(user._id)}
+              searchResult?.map((Fuser) => {
+                console.log(Fuser);
+                return <UserListItem
+                  key={Fuser._id}
+                  user={Fuser}
+                  handleFunction={() => accessChat(Fuser._id)}
                 />
-              ))
+              })
             )}
             {loadingChat && <Spinner ml="auto" d="flex" />}
           </DrawerBody>
